@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: poi
+  name: user-java
   namespace: api
   labels:
-    app: poi
+    app: user-java
 spec:
   type: ClusterIP
   ports:
@@ -14,33 +14,30 @@ spec:
     protocol: TCP
     targetPort: 80
   selector:
-    app: poi
+    app: user-java
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: poi-deployment
+  name: user-java-deployment
   namespace: api
   labels:
-    app: poi
+    app: user-java
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: poi
+      app: user-java
   template:
     metadata:
       labels:
-        app: poi
+        app: user-java
     spec:
       containers:
-        - name: poi
-          image: registryxgn2768.azurecr.io/tripinsights/poi:1.0
+        - name: user-java
+          image: registryxgn2768.azurecr.io/tripinsights/user:latest
           ports:
             - containerPort: 80
-          env:
-            - name: ASPNETCORE_ENVIRONMENT
-              value: Production
           envFrom:
             - secretRef:
                 name: sqlconnection

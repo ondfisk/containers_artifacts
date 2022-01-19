@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: poi
+  name: trips
   namespace: api
   labels:
-    app: poi
+    app: trips
 spec:
   type: ClusterIP
   ports:
@@ -14,33 +14,30 @@ spec:
     protocol: TCP
     targetPort: 80
   selector:
-    app: poi
+    app: trips
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: poi-deployment
+  name: trips-deployment
   namespace: api
   labels:
-    app: poi
+    app: trips
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: poi
+      app: trips
   template:
     metadata:
       labels:
-        app: poi
+        app: trips
     spec:
       containers:
-        - name: poi
-          image: registryxgn2768.azurecr.io/tripinsights/poi:1.0
+        - name: trips
+          image: registryxgn2768.azurecr.io/tripinsights/trips:latest
           ports:
             - containerPort: 80
-          env:
-            - name: ASPNETCORE_ENVIRONMENT
-              value: Production
           envFrom:
             - secretRef:
                 name: sqlconnection

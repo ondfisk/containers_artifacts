@@ -56,3 +56,21 @@ az acr build -r $ACR -t $ACR/tripinsights/user-java:1.0 .
 # Build userprofile in ACR
 cd ../../src/userprofile
 az acr build -r $ACR -t $ACR/tripinsight/userprofile:1.0 .
+
+# Challenge 4
+
+# Configure secrets for api namespace
+kubectl create secret generic sqlconnection --namespace=api --from-literal=SQL_DBNAME=$SQL_DBNAME --from-literal=SQL_SERVER=$SQL_SERVER --from-literal=SQL_USER=$SQL_USER --from-literal=SQL_PASSWORD=$SQL_PASSWORD
+
+AKS_ID=$(az aks show \
+    --resource-group teamResources \
+    --name aks \
+    --query id -o tsv)
+
+WEBDEV_ID=$(az ad group create --display-name webdev --mail-nickname webdev --query objectId -o tsv)
+APIDEV_ID=$(az ad group create --display-name apidev --mail-nickname apidev --query objectId -o tsv)
+
+az role assignment create \
+  --assignee $WEBDEV_ID \
+  --role "Azure Kubernetes Service Cluster User Role" \
+  --scope $AKS_ID

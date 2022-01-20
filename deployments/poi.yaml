@@ -41,6 +41,56 @@ spec:
           env:
             - name: ASPNETCORE_ENVIRONMENT
               value: Production
-          envFrom:
-            - secretRef:
-                name: sqlconnection
+          volumeMounts:
+            - name: secrets-store
+              mountPath: /secrets
+              readOnly: true
+      resource:
+      volumes:
+        - name: secrets-store
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: azure-kvname-user-msi
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tripviewer-ingress
+  namespace: api
+  annotations:
+    kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+  rules:
+  - host: 771af524b66640fe9e03.northeurope.aksapp.io
+    http:
+      paths:
+      - path: /api/poi
+        pathType: Prefix
+        backend:
+          service:
+            name: poi
+            port:
+              number: 80
+      - path: /api/user-java
+        pathType: Prefix
+        backend:
+          service:
+            name: user-java
+            port:
+              number: 80
+      - path: /api/trips
+        pathType: Prefix
+        backend:
+          service:
+            name: trips
+            port:
+              number: 80
+      - path: /api/user
+        pathType: Prefix
+        backend:
+          service:
+            name: userprofile
+            port:
+              number: 80

@@ -74,3 +74,21 @@ az role assignment create \
   --assignee $WEBDEV_ID \
   --role "Azure Kubernetes Service Cluster User Role" \
   --scope $AKS_ID
+
+
+# Set secrets in KV
+KEYVAULT=team3-2342352345
+sql-server SQL_SERVER
+
+az keyvault secret set --vault-name $KEYVAULT -n sql-server --value sqlserverxgn2768.database.windows.net
+az keyvault secret set --vault-name $KEYVAULT -n sql-user --value sqladminxGn2768
+az keyvault secret set --vault-name $KEYVAULT -n sql-dbname --value mydrivingDB
+az keyvault secret set --vault-name $KEYVAULT -n sql-password --value nB3ul0Ts6
+
+export IDENTITY_NAME="application-identity"
+az identity create --resource-group teamResources --name ${IDENTITY_NAME}
+export IDENTITY_CLIENT_ID="$(az identity show -g teamResources -n ${IDENTITY_NAME} --query clientId -otsv)"
+export IDENTITY_RESOURCE_ID="$(az identity show -g teamResources -n ${IDENTITY_NAME} --query id -otsv)"
+export POD_IDENTITY_NAME="my-pod-identity"
+export POD_IDENTITY_NAMESPACE="api"
+az aks pod-identity add --resource-group teamResources --cluster-name aks --namespace ${POD_IDENTITY_NAMESPACE}  --name ${POD_IDENTITY_NAME} --identity-resource-id ${IDENTITY_RESOURCE_ID}

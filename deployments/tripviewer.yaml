@@ -43,3 +43,24 @@ spec:
               value: http://10.0.118.115
             - name: USERPROFILE_API_ENDPOINT
               value: http://10.0.2.114
+      resource:
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tripviewer-ingress
+  namespace: web
+  annotations:
+    kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+  rules:
+  - host: 771af524b66640fe9e03.northeurope.aksapp.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: tripviewer
+            port:
+              number: 80

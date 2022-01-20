@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: trips
+  name: wcf
   namespace: api
   labels:
-    app: trips
+    app: wcf
 spec:
   type: ClusterIP
   ports:
@@ -14,28 +14,30 @@ spec:
     protocol: TCP
     targetPort: 80
   selector:
-    app: trips
+    app: wcf
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: trips-deployment
+  name: wcf-deployment
   namespace: api
   labels:
-    app: trips
+    app: wcf
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: trips
+      app: wcf
   template:
     metadata:
       labels:
-        app: trips
+        app: wcf
     spec:
+      nodeSelector:
+        "kubernetes.io/os": windows
       containers:
-        - name: trips
-          image: registryxgn2768.azurecr.io/tripinsights/trips:latest
+        - name: wcf
+          image: registryxgn2768.azurecr.io/wcfservice:1.0
           ports:
             - containerPort: 80
           volumeMounts:

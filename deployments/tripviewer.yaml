@@ -35,7 +35,7 @@ spec:
     spec:
       containers:
         - name: tripviewer
-          image: registryxgn2768.azurecr.io/tripinsights/tripviewer:latest
+          image: registryxgn2768.azurecr.io/tripviewer2:1.0
           ports:
             - containerPort: 80
           env:
@@ -43,6 +43,8 @@ spec:
               value: http://10.0.118.115
             - name: USERPROFILE_API_ENDPOINT
               value: http://10.0.2.114
+            - name: WCF_ENDPOINT
+              value: http://10.0.143.36
       resource:
 ---
 apiVersion: networking.k8s.io/v1
